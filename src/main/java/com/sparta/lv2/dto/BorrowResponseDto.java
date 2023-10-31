@@ -1,24 +1,40 @@
 package com.sparta.lv2.dto;
 
-import com.sparta.lv2.entity.Book;
 import com.sparta.lv2.entity.Borrow;
-import com.sparta.lv2.entity.User;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
 
 @Getter
 public class BorrowResponseDto {
     private String message;
 
-    public BorrowResponseDto(User user, Book book) {
-        this.message = String.format("%s님의 %s 대출 요청이 처리되었습니다.", user.getUsername(), book.getTitle());
-    }
-
-    public BorrowResponseDto(User user) {
-
-        this.message = String.format("%s님의 반납이 처리되었습니다.", user.getUsername());
-    }
+    private String username;
+    private String phone;
+    private String title;
+    private String author;
+    private boolean borrowing;
+    private LocalDateTime borrowDate;
+    private LocalDateTime returnDate;
 
     public BorrowResponseDto(Borrow borrow) {
-        this.username = borrow.getUsername;
+        this.username = borrow.getUsername();
+        this.phone = borrow.getPhone();
+        this.title = borrow.getTitle();
+        this.author = borrow.getAuthor();
+        this.borrowing = borrow.getBorrowing();
+        this.borrowDate = borrow.getBorrowDate();
+        this.returnDate = borrow.getReturnDate();
+    }
+
+    public BorrowResponseDto(Borrow borrow, String message) {
+        this.message = message;
+        this.username = borrow.getUsername();
+        this.phone = borrow.getPhone();
+        this.title = borrow.getTitle();
+        this.author = borrow.getAuthor();
+        this.borrowing = borrow.getBorrowing();
+        this.borrowDate = borrow.getBorrowDate();
+        this.returnDate = borrow.getReturnDate();
     }
 }

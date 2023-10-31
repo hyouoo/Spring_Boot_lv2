@@ -27,14 +27,4 @@ public class UserController {
     public UserResponseDto getUserInfo(@PathVariable Long userId) {
         return userService.getUserInfo(userId);
     }
-
-    @PatchMapping("/borrow")
-    public BorrowResponseDto borrowBook(@RequestBody BorrowRequestDto borrowRequestDto) {
-        return userService.borrowBook(borrowRequestDto);
-    }
-
-    @PatchMapping("/return")
-    public BorrowResponseDto returnBook(@RequestBody BorrowRequestDto borrowRequestDto) {
-        return userService.returnBook(borrowRequestDto);
-    }
 }

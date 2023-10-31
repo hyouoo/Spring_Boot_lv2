@@ -11,13 +11,13 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorMessage> illegalArgumentException(IllegalArgumentException ex, WebRequest request) {
-        ErrorMessage message = new ErrorMessage(ex.getMessage(), request.getDescription(true));
+        ErrorMessage message = new ErrorMessage(ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorMessage> resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-        ErrorMessage message = new ErrorMessage(ex.getMessage(), request.getDescription(true));
+        ErrorMessage message = new ErrorMessage(ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
 }
