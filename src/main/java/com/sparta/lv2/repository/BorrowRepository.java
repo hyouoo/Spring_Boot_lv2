@@ -9,7 +9,11 @@ import java.util.List;
 @Repository
 public interface BorrowRepository extends JpaRepository<Borrow, Long> {
 
+    List<Borrow> findAllByOrderByBorrowDateAsc();
+
     List<Borrow> findAllByBorrowingIsTrueOrderByBorrowDateAsc();
 
+    List<Borrow> findAllByUserIdOrderByBorrowDateAsc(Long userId);
 
+    List<Borrow> findAllByBorrowingIsTrueAndUserIdOrderByBorrowDateAsc(Long userId);
 }

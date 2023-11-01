@@ -20,6 +20,21 @@ public class BorrowController {
         return borrowService.getBorrows();
     }
 
+    @GetMapping("/ing")
+    public List<BorrowResponseDto> getBorrowsIng() {
+        return borrowService.getBorrowsIng();
+    }
+
+    @GetMapping("/{userId}")
+    public List<BorrowResponseDto> getUserBorrows(@PathVariable Long userId) {
+        return borrowService.getUserBorrows(userId);
+    }
+
+    @GetMapping("/ing/{userId}")
+    public List<BorrowResponseDto> getUserBorrowsIng(@PathVariable Long userId) {
+        return borrowService.getUserBorrowsIng(userId);
+    }
+
     @PutMapping("")
     public BorrowResponseDto borrowBook(@RequestBody BorrowRequestDto borrowRequestDto) {
         return borrowService.borrowBook(borrowRequestDto);

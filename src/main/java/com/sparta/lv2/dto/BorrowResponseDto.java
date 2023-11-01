@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Getter
 public class BorrowResponseDto {
-    private String message;
+    private final String message;
 
     private final String username;
     private final String phone;
@@ -18,6 +18,7 @@ public class BorrowResponseDto {
     private final LocalDate returnDate;
 
     public BorrowResponseDto(Borrow borrow) {
+        this.message = String.format("%d", borrow.getBorrowId());
         this.username = borrow.getUsername();
         this.phone = borrow.getPhone();
         this.title = borrow.getTitle();

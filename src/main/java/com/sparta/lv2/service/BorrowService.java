@@ -12,8 +12,8 @@ import com.sparta.lv2.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -29,7 +29,22 @@ public class BorrowService {
     private final BookService bookService;
 
     public List<BorrowResponseDto> getBorrows() {
+        return borrowRepository.findAllByOrderByBorrowDateAsc().stream()
+                .map(BorrowResponseDto::new).toList();
+    }
+
+    public List<BorrowResponseDto> getBorrowsIng() {
         return borrowRepository.findAllByBorrowingIsTrueOrderByBorrowDateAsc().stream()
+                .map(BorrowResponseDto::new).toList();
+    }
+
+    public List<BorrowResponseDto> getUserBorrows(Long userId) {
+        return borrowRepository.findAllByUserIdOrderByBorrowDateAsc(userId).stream()
+                .map(BorrowResponseDto::new).toList();
+    }
+
+    public List<BorrowResponseDto> getUserBorrowsIng(Long userId) {
+        return borrowRepository.findAllByBorrowingIsTrueAndUserIdOrderByBorrowDateAsc(userId).stream()
                 .map(BorrowResponseDto::new).toList();
     }
 
@@ -59,13 +74,14 @@ public class BorrowService {
         Book book = bookService.findBook(borrow.getBookId());
 
         LocalDate current = LocalDate.now();
-        Duration duration = Duration.between(current, user.getBorrowDate());
-        if (duration.toDays() > 7) {
+        long daysBetween = ChronoUnit.DAYS.between(borrow.getBorrowDate(), current);
+        if (daysBetween > 7) {
             user.setPenalty(true);
         } else {
             user.setBorrowable(true);
         }
         user.setReturnDate(LocalDate.now());
+
         book.setBorrowable(true);
 
         userRepository.save(user);
@@ -75,7 +91,12 @@ public class BorrowService {
         borrow.setReturnDate(LocalDate.now());
         Borrow savedBorrow = borrowRepository.save(borrow);
 
-        String message = String.format("%s님의 반납이 처리되었습니다.", savedBorrow.getUsername());
+        String message;
+        if (user.isPenalty()) {
+            message = String.format("%s님의 반납이 처리되었으나, 반납 기한이 초과되어 앞으로 2주간 대출이 불가능합니다.", savedBorrow.getUsername());
+        } else {
+            message = String.format("%s님의 반납이 처리되었습니다.", savedBorrow.getUsername());
+        }
         return new BorrowResponseDto(savedBorrow, message);
     }
 
@@ -87,8 +108,8 @@ public class BorrowService {
     private boolean borrowable(User user, Book book) {
         if (user.getReturnDate() != null && user.isPenalty()) {
             LocalDate current = LocalDate.now();
-            Duration duration = Duration.between(current, user.getReturnDate());
-            if (duration.toDays() < 14) {
+            long daysBetween = ChronoUnit.DAYS.between(user.getReturnDate(), current);
+            if (daysBetween < 14) {
                 throw new IllegalArgumentException("페널티 기간 중이라 대출이 제한됩니다.");
             } else {
                 user.setPenalty(false);
