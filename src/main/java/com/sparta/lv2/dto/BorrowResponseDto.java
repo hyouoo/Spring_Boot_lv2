@@ -3,7 +3,7 @@ package com.sparta.lv2.dto;
 import com.sparta.lv2.entity.Borrow;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 public class BorrowResponseDto {
@@ -14,8 +14,8 @@ public class BorrowResponseDto {
     private String title;
     private String author;
     private boolean borrowing;
-    private LocalDateTime borrowDate;
-    private LocalDateTime returnDate;
+    private LocalDate borrowDate;
+    private LocalDate returnDate;
 
     public BorrowResponseDto(Borrow borrow) {
         this.username = borrow.getUsername();

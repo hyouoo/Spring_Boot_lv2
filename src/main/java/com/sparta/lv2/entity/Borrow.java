@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -37,10 +37,10 @@ public class Borrow {
     private Boolean borrowing;
 
     @Column(name = "borrowDate")
-    private LocalDateTime borrowDate;
+    private LocalDate borrowDate;
 
     @Column(name = "returnDate")
-    private LocalDateTime returnDate;
+    private LocalDate returnDate;
 
     public Borrow(User user, Book book) {
         this.userId = user.getUserId();
@@ -50,18 +50,18 @@ public class Borrow {
         this.title = book.getTitle();
         this.author = book.getAuthor();
         this.borrowing = true;
-        this.borrowDate = LocalDateTime.now();
+        this.borrowDate = LocalDate.now();
     }
 
     public void setBorrowing(Boolean flag) {
         this.borrowing = flag;
     }
 
-    public void setBorrowDate(LocalDateTime borrowDate) {
+    public void setBorrowDate(LocalDate borrowDate) {
         this.borrowDate = borrowDate;
     }
 
-    public void setReturnDate(LocalDateTime returnDate) {
+    public void setReturnDate(LocalDate returnDate) {
         this.returnDate = returnDate;
     }
 }

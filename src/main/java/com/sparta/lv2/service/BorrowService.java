@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -39,18 +39,18 @@ public class BorrowService {
 
         if (borrowable(user, book)) {
             user.setBorrowable(false);
-            user.setBorrowDate(LocalDateTime.now());
+            user.setBorrowDate(LocalDate.now());
             book.setBorrowable(false);
         }
-        userRepository.save(user);
-        bookRepository.save(book);
+        User savedUser = userRepository.save(user);
+        Book savedBook = bookRepository.save(book);
 
-        Borrow borrow = new Borrow(user, book);
-        borrowRepository.save(borrow);
+        Borrow borrow = new Borrow(savedUser, savedBook);
+        Borrow savedBorrow = borrowRepository.save(borrow);
 
-        String message = String.format("%s님의 %s 대출 요청이 처리되었습니다.", borrow.getUsername(), borrow.getTitle());
+        String message = String.format("%s님의 %s 대출 요청이 처리되었습니다.", savedBorrow.getUsername(), savedBorrow.getTitle());
 
-        return new BorrowResponseDto(borrow, message);
+        return new BorrowResponseDto(savedBorrow, message);
     }
 
     public BorrowResponseDto returnBook(Long borrowId) {
@@ -58,25 +58,25 @@ public class BorrowService {
         User user = userService.findUser(borrow.getUserId());
         Book book = bookService.findBook(borrow.getBookId());
 
-        LocalDateTime current = LocalDateTime.now();
+        LocalDate current = LocalDate.now();
         Duration duration = Duration.between(current, user.getBorrowDate());
         if (duration.toDays() > 7) {
             user.setPenalty(true);
         } else {
             user.setBorrowable(true);
         }
-        user.setReturnDate(LocalDateTime.now());
+        user.setReturnDate(LocalDate.now());
         book.setBorrowable(true);
 
-        userRepository.save(user);
-        bookRepository.save(book);
+        User savedUser = userRepository.save(user);
+        Book savedBook = bookRepository.save(book);
 
         borrow.setBorrowing(false);
-        borrow.setReturnDate(LocalDateTime.now());
-        borrowRepository.save(borrow);
+        borrow.setReturnDate(LocalDate.now());
+        Borrow savedBorrow = borrowRepository.save(borrow);
 
-        String message = String.format("%s님의 반납이 처리되었습니다.", borrow.getUsername());
-        return new BorrowResponseDto(borrow, message);
+        String message = String.format("%s님의 반납이 처리되었습니다.", savedBorrow.getUsername());
+        return new BorrowResponseDto(savedBorrow, message);
     }
 
     private Borrow findBorrow(Long borrowId) {
@@ -86,7 +86,7 @@ public class BorrowService {
 
     private boolean borrowable(User user, Book book) {
         if (user.getReturnDate() != null && user.isPenalty()) {
-            LocalDateTime current = LocalDateTime.now();
+            LocalDate current = LocalDate.now();
             Duration duration = Duration.between(current, user.getReturnDate());
             if (duration.toDays() < 14) {
                 throw new IllegalArgumentException("페널티 기간 중이라 대출이 제한됩니다.");

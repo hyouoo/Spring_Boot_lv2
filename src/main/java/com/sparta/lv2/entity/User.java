@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -38,10 +39,10 @@ public class User {
     private boolean penalty;
 
     @Column(name = "borrowDate")
-    private LocalDateTime borrowDate;
+    private LocalDate borrowDate;
 
     @Column(name = "returnDate")
-    private LocalDateTime returnDate;
+    private LocalDate returnDate;
 
     public User(UserRequestDto userRequestDto) {
         this.username = userRequestDto.getUsername();
@@ -61,11 +62,11 @@ public class User {
         this.penalty = flag;
     }
 
-    public void setBorrowDate(LocalDateTime borrowDate) {
+    public void setBorrowDate(LocalDate borrowDate) {
         this.borrowDate = borrowDate;
     }
 
-    public void setReturnDate(LocalDateTime returnDate) {
+    public void setReturnDate(LocalDate returnDate) {
         this.returnDate = returnDate;
     }
 }

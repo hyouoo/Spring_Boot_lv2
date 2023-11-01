@@ -3,7 +3,6 @@ package com.sparta.lv2.service;
 import com.sparta.lv2.dto.UserRequestDto;
 import com.sparta.lv2.dto.UserResponseDto;
 import com.sparta.lv2.entity.User;
-import com.sparta.lv2.repository.BorrowRepository;
 import com.sparta.lv2.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final BookService bookService;
-    private final BorrowRepository borrowRepository;
 
     public UserResponseDto registerUser(UserRequestDto userRequestDto) {
         User user = new User(userRequestDto);
