@@ -68,8 +68,8 @@ public class BorrowService {
         user.setReturnDate(LocalDate.now());
         book.setBorrowable(true);
 
-        User savedUser = userRepository.save(user);
-        Book savedBook = bookRepository.save(book);
+        userRepository.save(user);
+        bookRepository.save(book);
 
         borrow.setBorrowing(false);
         borrow.setReturnDate(LocalDate.now());

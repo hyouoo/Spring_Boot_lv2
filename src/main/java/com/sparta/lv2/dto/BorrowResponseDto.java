@@ -9,13 +9,13 @@ import java.time.LocalDate;
 public class BorrowResponseDto {
     private String message;
 
-    private String username;
-    private String phone;
-    private String title;
-    private String author;
-    private boolean borrowing;
-    private LocalDate borrowDate;
-    private LocalDate returnDate;
+    private final String username;
+    private final String phone;
+    private final String title;
+    private final String author;
+    private final boolean borrowing;
+    private final LocalDate borrowDate;
+    private final LocalDate returnDate;
 
     public BorrowResponseDto(Borrow borrow) {
         this.username = borrow.getUsername();

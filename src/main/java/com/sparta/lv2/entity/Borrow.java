@@ -57,10 +57,6 @@ public class Borrow {
         this.borrowing = flag;
     }
 
-    public void setBorrowDate(LocalDate borrowDate) {
-        this.borrowDate = borrowDate;
-    }
-
     public void setReturnDate(LocalDate returnDate) {
         this.returnDate = returnDate;
     }
