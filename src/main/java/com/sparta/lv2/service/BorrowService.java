@@ -24,10 +24,6 @@ public class BorrowService {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
 
-    private final UserService userService;
-
-    private final BookService bookService;
-
     public List<BorrowResponseDto> getBorrows() {
         return borrowRepository.findAllByOrderByBorrowDateAsc().stream()
                 .map(BorrowResponseDto::new).toList();
@@ -49,8 +45,10 @@ public class BorrowService {
     }
 
     public BorrowResponseDto borrowBook(BorrowRequestDto borrowRequestDto) {
-        User user = userService.findUser(borrowRequestDto.getUserId());
-        Book book = bookService.findBook(borrowRequestDto.getBookId());
+        User user = userRepository.findById(borrowRequestDto.getUserId()).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 회원입니다."));
+        Book book = bookRepository.findById(borrowRequestDto.getBookId()).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 책입니다."));
 
         if (borrowable(user, book)) {
             user.setBorrowable(false);
@@ -70,8 +68,10 @@ public class BorrowService {
 
     public BorrowResponseDto returnBook(Long borrowId) {
         Borrow borrow = findBorrow(borrowId);
-        User user = userService.findUser(borrow.getUserId());
-        Book book = bookService.findBook(borrow.getBookId());
+        User user = userRepository.findById(borrow.getUserId()).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 회원입니다."));
+        Book book = bookRepository.findById(borrow.getBookId()).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 책입니다."));
 
         LocalDate current = LocalDate.now();
         long daysBetween = ChronoUnit.DAYS.between(borrow.getBorrowDate(), current);
@@ -81,7 +81,6 @@ public class BorrowService {
             user.setBorrowable(true);
         }
         user.setReturnDate(LocalDate.now());
-
         book.setBorrowable(true);
 
         userRepository.save(user);
@@ -106,11 +105,11 @@ public class BorrowService {
     }
 
     private boolean borrowable(User user, Book book) {
-        if (user.getReturnDate() != null && user.isPenalty()) {
+        if (user.isPenalty()) {
             LocalDate current = LocalDate.now();
             long daysBetween = ChronoUnit.DAYS.between(user.getReturnDate(), current);
             if (daysBetween < 14) {
-                throw new IllegalArgumentException("페널티 기간 중이라 대출이 제한됩니다.");
+                throw new IllegalArgumentException(String.format("페널티 기간 중이라 대출이 제한됩니다. %d일 후에 다시 오세요.", 14 - daysBetween));
             } else {
                 user.setPenalty(false);
                 user.setBorrowable(true);
